@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <input id="nombre">
+        <input id="apellido">
+        <input id="mail">
+        <input id="tema">
+        <button id="btnGrabar" type="button">Grabar</button>
+        <!-- <button id="btnRsm"  type="button">Resumen</button> -->
+          
+    </form>
+<hr/>
+<button id="btnListado">Listado</button>
+<div id="usersRows"></div>
+
+    <script>
+        const eliminarOrador = (id) => {
+        debugger;
+        const respuesta = fetch(`http://localhost:8080/web-app1/api/orador/nuevo?id=${id}`,{
+            method:'DELETE',
+        });
+
+        respuesta
+            .then(response => response.json())
+            .then(respuesta =>{
+                alert(`Elimano el orador id: ${respuesta.id}`);
+                console.log(respuesta)
+                
+            })
+            .catch(error => console.log(error))
+            
+        } 
+
+
+        const nuevoOrador =() => {
+            debugger;
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const mail = document.getElementById('mail').value;
+            const tema = document.getElementById('tema').value;
+            
+            const orador = {
+                nombre,
+                apellido,
+                mail,
+                tema
+            };
+
+            const respuesta = fetch('http://localhost:8080/web-app1/api/orador/nuevo',{
+                method:'POST',
+                body: JSON.stringify(orador)
+        });
+
+        respuesta
+            .then(response => response.json())
+            .then(respuesta =>{
+                alert(`alta al orador id: ${respuesta.id}`);
+                console.log(respuesta)
+                
+            })
+            .catch(error => console.log(error))
+         }
+//***********************************************
+         function listarOradores () {
+            debugger;
+            const respuesta = fetch('http://localhost:8080/web-app1/api/orador/nuevo');
+            // intento resolvr la promesa
+            respuesta
+            .then(response => response.json())
+            .then(users =>{
+                //actualizar el DIV en HTML
+                dibujarTabla(users)
+                
+            })
+            .catch(error => console.log(error))
+
+        }
+        
+        function dibujarTabla(data) {
+           // debugger;
+            const rows = dibujarFilas(data);
+            document.getElementById(`usersRows`).innerHTML = rows;
+           // document.getElementById('usersRows').innerHTML=rows;
+        }
+
+
+        function dibujarFilas(oradores) {
+            //debugger;
+            let rows = '';
+            
+            for(let orador of oradores) {
+                console.log(orador) 
+                
+                rows += ` ACA Lista
+                <tr>
+                    <th scope="row">${orador.id} </th>
+                    <td>${orador.nombre} </td>
+                    <td>${orador.apellido} </td>
+                    <td>${orador.email} </td>
+                    <td>${orador.tema} </td>
+                    <td>
+                       <button onClick="eliminarOrador(${orador.id})">
+                            Eliminar</button>
+
+                    </td>
+
+                </tr> `        
+                
+
+            }
+            
+            return rows;
+        }
+        
+        document.getElementById('btnGrabar').addEventListener('click',nuevoOrador);
+       /* btnRsm.addEventListener("btnGrabar",nuevoOrador);*/
+       document.getElementById('btnListado').addEventListener('click',listarOradores);
+   document.getElementById('btnListado').addEventListener('click',listarOradores);
+ 
+ 
+ </script>
+    
+</body>
+</html>
