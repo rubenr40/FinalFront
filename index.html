@@ -4,8 +4,264 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="Oradores.css">
 </head>
 <body>
-    <link rel="stylesheet" href="oradores.html">
+    <form>
+        <input id="nombre">
+        <input id="apellido">
+        <input id="mail">
+        <input id="tema">
+         <!-- <button id="btnGrabar" type="button">Grabar</button>  -->
+        <button id="btnGrabar" type="button" class="btn btn-primary" data-bs-toggle="modal">
+            Grabar
+            <img src="iconoGrabar.png" width="50px">
+        </button>
+        <!-- <button id="btnRsm"  type="button">Resumen</button> 
+        iconos de  https://www.iconarchive.com/show/gartoon-places-icons-by-gartoon-team/folder-downloads-icon.html
+        -->
+          
+    </form>
+<hr/>
+<button id="btnListado">Listado
+    <img src="iconoListado.png" width="50px">
+</button>
+
+<table class="table table-striped  align-bottom">
+    <caption style="font-size:large; color: #d41717;">Oradores inscriptos a la fecha</caption>
+    <thead>
+        <tr class="table-primary">
+            <!--<th scope="col">ID</th>-->
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">e_mail</th>
+            <th scope="col">Tema</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        <tbody id="usersRows"></tbody>
+    </thead>
+
+
+</table>
+
+<div id="usersRows"></div> 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form class="form">
+                <input id="nombreActualizar">
+                <input id="apellidoActualizar">
+                <input id="mailActualizar">
+                <input id="temaActualizar">
+                <!--<button id="btnGrabar" type="button">Grabar</button> -->
+                <!-- <button id="btnRsm"  type="button">Resumen</button> -->
+                  
+            </form>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button"  class="btn btn-primary" onClick="actualizarOrador()">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script>
+        listarOradores();
+        let oradorId;
+        let oradores = [];  // array vacio
+        let oradorActual;
+        const setId=(id) =>{
+                oradorId= id;
+                //alert(oradorId);
+//debugger;
+                const orador = oradores.find(o => o.id === id);
+                oradorActual = orador;
+                
+                // devuelve orador si lo encuentra
+                //alert(JSON.stringify(orador));
+
+            document.getElementById('nombreActualizar').value =oradorActual.nombre;
+            document.getElementById('apellidoActualizar').value =oradorActual.apellido;
+            document.getElementById('mailActualizar').value =oradorActual.mail;
+            document.getElementById('temaActualizar').value =oradorActual.tema;
+        }
+
+        const setOradores = (nuevosOradores) => {
+            oradores=nuevosOradores;
+            //alert(JSON.stringify(oradores));
+        }
+
+
+        const actualizarOrador = () => {
+            //debugger;
+            // verifico que exista el orador
+            if(!oradorActual) {
+                return;
+            }
+            
+            
+            const nombre = document.getElementById('nombreActualizar').value;
+            const apellido = document.getElementById('apellidoActualizar').value;
+            const mail = document.getElementById('mailActualizar').value;
+            const tema = document.getElementById('temaActualizar').value;
+            const orador = {
+                nombre,
+                apellido,
+                mail,
+                tema
+            };
+            alert("Actualizando"+oradorActual.id);
+            
+             //  debugger;
+
+            const respuesta = fetch(`http://localhost:8080/web-app1/api/orador/nuevo?id=${oradorActual.id}`,{
+                method:'PUT',
+                body: JSON.stringify(orador)
+        });
+        
+        respuesta
+            .then(response => response.json())
+            .then(respuesta =>{
+                alert(`Se ha actualizado el Orador id: ${respuesta.id}`);
+                //console.log(respuesta)
+                //listarOradores();
+            })
+            .catch(error => console.log(error))
+            //listarOradores();
+        }
+
+        const eliminarOrador = (id) => {
+       // debugger;
+        const respuesta = fetch(`http://localhost:8080/web-app1/api/orador/nuevo?id=${id}`,{
+            method:'DELETE',
+        });
+        //debugger;
+        //listarOradores();
+        respuesta
+            .then(response => response)
+            .then(respuesta =>{
+                alert(`Elimino el orador id: ${id} `);
+                //console.log(respuesta)
+               // listarOradores();
+            })
+            .catch(error => console.log(error))
+            
+        } 
+
+
+        const nuevoOrador =() => {
+          //  debugger;
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const mail = document.getElementById('mail').value;
+            const tema = document.getElementById('tema').value;
+            
+            const orador = {
+                nombre,
+                apellido,
+                mail,
+                tema
+            };
+
+            const respuesta = fetch('http://localhost:8080/web-app1/api/orador/nuevo',{
+                method:'POST',
+                body: JSON.stringify(orador)
+        });
+
+        respuesta
+            .then(response => response.json())
+            .then(respuesta =>{
+                alert(`Nuevo orador id: ${respuesta.id}`);
+                //console.log(respuesta)
+                listarOradores();
+            })
+            .catch(error => console.log(error))
+         }
+//***********************************************
+         function listarOradores () {
+            //debugger;
+            const respuesta = fetch('http://localhost:8080/web-app1/api/orador/nuevo');
+            // intento resolvr la promesa
+            respuesta
+            .then(response => response.json())
+            .then(oradores => {
+
+                //**** para la edicion
+                setOradores(oradores);
+
+                //actualizar el DIV en HTML
+                dibujarTabla(oradores);
+                
+            })
+            .catch(error => console.log(error))
+
+        }
+        
+        function dibujarTabla(data) {
+           // debugger;
+            const rows = dibujarFilas(data);
+            document.getElementById(`usersRows`).innerHTML = rows;
+           // document.getElementById('usersRows').innerHTML=rows;
+        }
+
+
+        function dibujarFilas(oradores) {
+            //debugger;
+            let rows = '';
+            
+            for(let orador of oradores) {
+                console.log(orador) 
+                
+                rows += ` 
+                <tr>
+                    <td>${orador.nombre} </td>
+                    <td>${orador.apellido} </td>
+                    <td>${orador.mail} </td>
+                    <td>${orador.tema} </td>
+                    <td>
+                       <button onClick="eliminarOrador(${orador.id})">
+                            Eliminar
+                            <img src="iconoTrash.png" width="30px">
+                            </button>
+
+                    <!-- </td>
+                    <td>-->
+                       
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"  onClick="setId(${orador.id})">
+                            Editar
+                            <img src="iconoEditar.png" width="30px">
+                        </button>
+
+                    </td>
+
+                </tr> `        
+                
+
+            }
+            
+            return rows;
+        }
+        
+        document.getElementById('btnGrabar').addEventListener('click',nuevoOrador);
+       /* btnRsm.addEventListener("btnGrabar",nuevoOrador);*/
+        document.getElementById('btnListado').addEventListener('click',listarOradores);
+        document.getElementById('btnListado').addEventListener('click',listarOradores);
+ 
+ 
+ </script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
