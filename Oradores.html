@@ -14,18 +14,26 @@
         <input id="apellido">
         <input id="mail">
         <input id="tema">
-        <button id="btnGrabar" type="button">Grabar</button>
-        <!-- <button id="btnRsm"  type="button">Resumen</button> -->
+         <!-- <button id="btnGrabar" type="button">Grabar</button>  -->
+        <button id="btnGrabar" type="button" class="btn btn-primary" data-bs-toggle="modal">
+            Grabar
+            <img src="iconoGrabar.png" width="50px">
+        </button>
+        <!-- <button id="btnRsm"  type="button">Resumen</button> 
+        iconos de  https://www.iconarchive.com/show/gartoon-places-icons-by-gartoon-team/folder-downloads-icon.html
+        -->
           
     </form>
 <hr/>
-<button id="btnListado">Listado</button>
+<button id="btnListado">Listado
+    <img src="iconoListado.png" width="50px">
+</button>
 
 <table class="table table-striped  align-bottom">
     <caption style="font-size:large; color: #d41717;">Oradores inscriptos a la fecha</caption>
     <thead>
         <tr class="table-primary">
-            <th scope="col">ID</th>
+            <!--<th scope="col">ID</th>-->
             <th scope="col">Nombre</th>
             <th scope="col">Apellido</th>
             <th scope="col">e_mail</th>
@@ -222,14 +230,17 @@
                     <td>${orador.tema} </td>
                     <td>
                        <button onClick="eliminarOrador(${orador.id})">
-                            Eliminar</button>
+                            Eliminar
+                            <img src="iconoTrash.png" width="30px">
+                            </button>
 
-                    </td>
-                    <td>
+                    <!-- </td>
+                    <td>-->
                        
-                            <!-- Button trigger modal -->
+                        <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"  onClick="setId(${orador.id})">
                             Editar
+                            <img src="iconoEditar.png" width="30px">
                         </button>
 
                     </td>
