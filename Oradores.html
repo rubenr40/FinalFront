@@ -6,7 +6,7 @@
     <title>Document</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    
+    <link rel="stylesheet" href="Oradores.css">
 </head>
 <body>
     <form>
@@ -21,14 +21,17 @@
 <hr/>
 <button id="btnListado">Listado</button>
 
-<table class="table">
+<table class="table table-striped  align-bottom">
+    <caption style="font-size:large; color: #d41717;">Oradores inscriptos a la fecha</caption>
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th scope="col">ID</th>
             <th scope="col">Nombre</th>
             <th scope="col">Apellido</th>
             <th scope="col">e_mail</th>
             <th scope="col">Tema</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
         </tr>
         <tbody id="usersRows"></tbody>
     </thead>
@@ -46,7 +49,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form>
+            <form class="form">
                 <input id="nombreActualizar">
                 <input id="apellidoActualizar">
                 <input id="mailActualizar">
@@ -59,12 +62,13 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button"  class="btn btn-primary" onClick="actualizarOrador">Actualizar</button>
+          <button type="button"  class="btn btn-primary" onClick="actualizarOrador()">Actualizar</button>
         </div>
       </div>
     </div>
   </div>
     <script>
+        listarOradores();
         let oradorId;
         let oradores = [];  // array vacio
         let oradorActual;
@@ -78,7 +82,7 @@
                 // devuelve orador si lo encuentra
                 //alert(JSON.stringify(orador));
 
-                document.getElementById('nombreActualizar').value =oradorActual.nombre;
+            document.getElementById('nombreActualizar').value =oradorActual.nombre;
             document.getElementById('apellidoActualizar').value =oradorActual.apellido;
             document.getElementById('mailActualizar').value =oradorActual.mail;
             document.getElementById('temaActualizar').value =oradorActual.tema;
@@ -90,33 +94,42 @@
         }
 
 
-        const actualizarOrador =() => {
+        const actualizarOrador = () => {
+            //debugger;
             // verifico que exista el orador
-            if(oradorActual) {
+            if(!oradorActual) {
                 return;
             }
-            document.getElementById('nombreActualizar').value =oradorActual.nombre;
-            document.getElementById('apellidoActualizar').value =oradorActual.apellido;
-            document.getElementById('mailActualizar').value =oradorActual.mail;
-            document.getElementById('temaActualizar').value =oradorActual.tema;
+            
+            
+            const nombre = document.getElementById('nombreActualizar').value;
+            const apellido = document.getElementById('apellidoActualizar').value;
+            const mail = document.getElementById('mailActualizar').value;
+            const tema = document.getElementById('temaActualizar').value;
+            const orador = {
+                nombre,
+                apellido,
+                mail,
+                tema
+            };
             alert("Actualizando"+oradorActual.id);
             
              //  debugger;
 
-            const respuesta = fetch('http://localhost:8080/web-app1/api/orador/nuevo?id$(oradorActual.id)',{
+            const respuesta = fetch(`http://localhost:8080/web-app1/api/orador/nuevo?id=${oradorActual.id}`,{
                 method:'PUT',
                 body: JSON.stringify(orador)
         });
-
+        
         respuesta
             .then(response => response.json())
             .then(respuesta =>{
                 alert(`Se ha actualizado el Orador id: ${respuesta.id}`);
                 //console.log(respuesta)
-                listarOradores();
+                //listarOradores();
             })
             .catch(error => console.log(error))
-            
+            //listarOradores();
         }
 
         const eliminarOrador = (id) => {
@@ -125,12 +138,13 @@
             method:'DELETE',
         });
         //debugger;
+        //listarOradores();
         respuesta
             .then(response => response)
             .then(respuesta =>{
                 alert(`Elimino el orador id: ${id} `);
-                console.log(respuesta)
-                listarOradores();
+                //console.log(respuesta)
+               // listarOradores();
             })
             .catch(error => console.log(error))
             
@@ -167,7 +181,7 @@
          }
 //***********************************************
          function listarOradores () {
-           // debugger;
+            //debugger;
             const respuesta = fetch('http://localhost:8080/web-app1/api/orador/nuevo');
             // intento resolvr la promesa
             respuesta
@@ -202,7 +216,6 @@
                 
                 rows += ` 
                 <tr>
-                    <th scope="row">${orador.id} </th>
                     <td>${orador.nombre} </td>
                     <td>${orador.apellido} </td>
                     <td>${orador.mail} </td>
